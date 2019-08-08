@@ -1,11 +1,20 @@
 const express = require("express");
 const router = express.Router();
 
-const dbAccts = require("../data/dbConfig.js");
+const dbAccts = require("../dbConfig.js");
 
+// this file will only be used when the route begins with "/accounts"
+//i like async try catch here, much simpler than then()
 router.get("/", async (req, res) => {
+  const limit = req.query.limit;
+  const sortby = req.query.sortby;
+  const sortdir = req.query.sortdir;
+
   try {
-    const accounts = await dbAccts("accounts");
+    const accounts = await dbAccts("accounts")
+      .limit(limit)
+      .orderBy(sortby, sortdir);
+
     if (accounts) {
       res.status(200).json(accounts);
     } else {
